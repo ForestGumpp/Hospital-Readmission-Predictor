@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -11,7 +12,9 @@ warnings.filterwarnings("ignore")
 # predicts whether a diabetic patient will be readmitted within 30 days
 # dataset: diabetes 130-US hospitals (1999-2008)
 
-df = pd.read_csv("diabetic_data.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+df = pd.read_csv(os.path.join(BASE_DIR, "diabetic_data.csv"))
+
 df.replace("?", np.nan, inplace=True)
 
 # these had way too many missing values / weren't useful
@@ -57,5 +60,4 @@ patient_prob = model.predict_proba(patient.reshape(1, -1))[0][1]
 
 print("computing shapley values, this takes a bit...")
 shapley_vals = mc_shapley(model, feature_names, patient, background, n_samples=512)
-
 display_shapley(patient_prob, shapley_vals)
